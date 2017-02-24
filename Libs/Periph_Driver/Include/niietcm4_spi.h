@@ -113,7 +113,8 @@ typedef struct
 /**
   * @brief Макрос проверки аргументов коэффициента деления делителя системной частоты SPI.
   */
-#define IS_SPI_SYS_DIV(DIVIDER)       ((DIVIDER) <= 0x003F)
+#define IS_SPI_SYS_DIV(DIVIDER)       (((DIVIDER) <= 0x003F) && \
+                                       ((DIVIDER) >= 0x0001))
 
 /**
   * @brief  Режим работы SPI
