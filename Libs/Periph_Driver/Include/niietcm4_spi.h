@@ -48,6 +48,74 @@
   */
 
 /**
+  * @brief  Выбор источника тактирования для SPI
+  */
+
+typedef enum
+{
+	SPI_Select_SystemClock, /*!< на модуль SPI подается системная частота. */
+	SPI_Select_Osc,         /*!< на модуль SPI подается частота осцилятора. */
+	SPI_Select_USBClock,    /*!< на модуль SPI подается частота контроллера USB (60 МГц). */
+	SPI_Select_InputGPIO    /*!< вход GPIO */
+} SPI_SelectSysClk_TypeDef;
+
+/**
+  * @brief Макрос проверки аргументов типа @ref SPI_SysClk_TypeDef.
+  */
+
+#define IS_SPI_SYSCLK(CLK_SOURCE)           (((CLK_SOURCE) == SPI_Select_SystemClock) || \
+                                             ((CLK_SOURCE) == SPI_Select_Osc)         || \
+                                             ((CLK_SOURCE) == SPI_Select_USBClock)    || \
+											 ((CLK_SOURCE) == SPI_Select_InputGPIO))
+
+/**
+  * @brief  Бит включения тактового сигнала
+  */
+typedef enum
+{
+	SPI_Clk_Disable,            /*!< Тактовый сигнал SPI выключен. */
+	SPI_Clk_Enable              /*!< Тактовый сигнал SPI включен. */
+} SPI_SysClkStatus_TypeDef;
+
+/**
+  * @brief Макрос проверки аргументов типа @ref SPI_SysClkEn_TypeDef.
+  */
+
+#define IS_SPI_CLKEN(EN)                    (((EN) == SPI_Clk_Disable) || \
+                                             ((EN) == SPI_Clk_Enable))
+
+/**
+  * @brief  Бит включения делителя
+  */
+
+typedef enum
+{
+	SPI_SysClkDiv_SysClk,         /*!< Частота тактового сигнала равна системной частоте */
+	SPI_SysClkDiv_DIVSPI          /*!< Частота тактового сигнала определяется по формуле
+	                             Fsys = Fosc/(2 *(DIV_SPI) + 1) */
+} SPI_SysClkDiv_TypeDef;
+
+/**
+  * @brief Макрос проверки аргументов типа @ref SPI_SysClkDiv_TypeDef.
+  */
+
+#define IS_SPI_CLKDIV(DIV)                  (((DIV) == SPI_SysClkDiv_SysClk) || \
+                                             ((DIV) == SPI_SysClkDiv_DIVSPI))
+
+typedef struct
+{
+	SPI_SelectSysClk_TypeDef   SPI_SelectClk;     /* <!Выбор источника тактирования для SPI */
+	SPI_SysClkDiv_TypeDef      SPI_ClkDiv;        /* <!Бит включения делителя */
+	SPI_SysClkStatus_TypeDef   SPI_SysClkStatus;  /* <!Бит включения тактового сигнала */
+	uint32_t                   SPI_DIV_SPI;       /* <!Коэффициент деления делителя системной частоты SPI */
+} SPI_ClkInit_TypeDef;
+
+/**
+  * @brief Макрос проверки аргументов коэффициента деления делителя системной частоты SPI.
+  */
+#define IS_SPI_SYS_DIV(DIVIDER)       ((DIVIDER) <= 0x003F)
+
+/**
   * @brief  Режим работы SPI
   */
 
@@ -148,7 +216,7 @@ typedef struct
    SPI_FRF_Typedef SPI_FRF;                 /*!< Поле выбора протокола обмена информацией */
    SPI_TX_Slave_Typedef SPI_TX_Slave;       /*!< Бит запрета передачи данных.
                                                  В режиме мастера значение бита игнорируется */
-}SPI_Init_TypeDef;
+} SPI_Init_TypeDef;
 
 /**
   * @brief Макрос проверки аргументов коэффициента деления первого делителя.
@@ -263,6 +331,8 @@ typedef struct
 /** @defgroup SPI_Exported_Functions Функции
   * @{
   */
+void SPI_ClkInit(NT_SPI_TypeDef* SPIx, const SPI_ClkInit_TypeDef* SPI_ClkInitStruct);
+void SPI_StructClkInit(SPI_ClkInit_TypeDef* SPI_ClkInitStruct);
 
 void SPI_DeInit(NT_SPI_TypeDef* SPIx);
 void SPI_Init(NT_SPI_TypeDef* SPIx, const SPI_Init_TypeDef* SPI_InitStruct);

@@ -26,6 +26,56 @@
 
 #include "niietcm4_spi.h"
 
+void SPI_ClkInit(NT_SPI_TypeDef* SPIx, const SPI_ClkInit_TypeDef* SPI_ClkInitStruct)
+{
+    assert_param(IS_SPI_ALL_PERIPH(SPIx));
+    assert_param(IS_SPI_SYSCLK(SPI_ClkInitStruct->SPI_SelectClk));
+    assert_param(IS_SPI_CLKEN(SPI_ClkInitStruct->SPI_SysClkDiv));
+    assert_param(IS_SPI_CLKDIV(SPI_ClkInitStruct->SPI_ClkDiv));
+    assert_param(IS_SPI_SYS_DIV(SPI_ClkInitStruct->SPI_DIV_SPI));
+
+	volatile NT_COMMON_REG_TypeDef Common_Reg;
+	if (SPIx == NT_SPI0)
+	{
+		Common_Reg.UART_SPI_CLK_SEL_bit.SEL_SPI0 = SPI_ClkInitStruct->SPI_SelectClk;
+		Common_Reg.SPI_CLK_bit.CLKEN_SPI0 = SPI_ClkInitStruct->SPI_SysClkStatus;
+		Common_Reg.SPI_CLK_bit.DIVEN_SPI0 = SPI_ClkInitStruct->SPI_ClkDiv;
+		Common_Reg.SPI_CLK_bit.DIV_SPI0 = SPI_ClkInitStruct->SPI_DIV_SPI;
+	}
+	else
+		if (SPIx == NT_SPI1)
+	{
+		Common_Reg.UART_SPI_CLK_SEL_bit.SEL_SPI1 = SPI_ClkInitStruct->SPI_SelectClk;
+		Common_Reg.SPI_CLK_bit.CLKEN_SPI1 = SPI_ClkInitStruct->SPI_SysClkStatus;
+		Common_Reg.SPI_CLK_bit.DIVEN_SPI1 = SPI_ClkInitStruct->SPI_ClkDiv;
+		Common_Reg.SPI_CLK_bit.DIV_SPI1 = SPI_ClkInitStruct->SPI_DIV_SPI;
+	}
+	else
+		if (SPIx == NT_SPI2)
+	{
+		Common_Reg.UART_SPI_CLK_SEL_bit.SEL_SPI2 = SPI_ClkInitStruct->SPI_SelectClk;
+		Common_Reg.SPI_CLK_bit.CLKEN_SPI2 = SPI_ClkInitStruct->SPI_SysClkStatus;
+		Common_Reg.SPI_CLK_bit.DIVEN_SPI2 = SPI_ClkInitStruct->SPI_ClkDiv;
+		Common_Reg.SPI_CLK_bit.DIV_SPI2 = SPI_ClkInitStruct->SPI_DIV_SPI;
+	}
+	else
+		if (SPIx == NT_SPI3)
+	{
+		Common_Reg.UART_SPI_CLK_SEL_bit.SEL_SPI3 = SPI_ClkInitStruct->SPI_SelectClk;
+		Common_Reg.SPI_CLK_bit.CLKEN_SPI3 = SPI_ClkInitStruct->SPI_SysClkStatus;
+		Common_Reg.SPI_CLK_bit.DIVEN_SPI3 = SPI_ClkInitStruct->SPI_ClkDiv;
+		Common_Reg.SPI_CLK_bit.DIV_SPI3 = SPI_ClkInitStruct->SPI_DIV_SPI;
+	}
+}
+
+void SPI_StructClkInit(SPI_ClkInit_TypeDef* SPI_ClkInitStruct)
+{
+	SPI_ClkInitStruct->SPI_SelectClk = SPI_Select_SystemClock;
+	SPI_ClkInitStruct->SPI_ClkDiv = SPI_SysClkDiv_SysClk;
+	SPI_ClkInitStruct->SPI_SysClkStatus = SPI_Clk_Enable;
+	SPI_ClkInitStruct->SPI_DIV_SPI = 0;
+}
+
 void SPI_DeInit(NT_SPI_TypeDef* SPIx)
 {
     RCC_PeriphRst_TypeDef SpiRst;
